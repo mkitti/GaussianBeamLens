@@ -16,8 +16,9 @@ end
 # ╔═╡ a7ef92d7-41c1-4f7d-a0f9-b8037237af4f
 begin
 	using Pkg
-	#Pkg.develop(url="https://github.com/mkitti/GaussianBeamLens.git")
 	Pkg.activate(".")
+	#Pkg.develop(url="https://github.com/mkitti/GaussianBeamLens.git")
+	#Pkg.activate("GaussianBeamLens")
 end
 
 # ╔═╡ bca271a4-ee26-48ab-bef8-e6c28ae76351
@@ -30,7 +31,7 @@ end
 # ╔═╡ 3497df90-ded9-11eb-05ca-ab10e373dfb4
 begin
 	cd(raw"C:\Users\kittisopikulm\Documents\Julia\GaussianBeamLens")
-	println(pwd())
+	pwd()
 end
 
 # ╔═╡ 10e09fe7-cc23-4487-b1dc-b0a545bf2489
@@ -64,7 +65,11 @@ $(@bind Lens_z Slider(0:10:2000; default=1000, show_value=true))
 """
 
 # ╔═╡ 0a5838ba-39e9-4a76-8bb2-b7914a219a9f
-GR.heatmap(GaussianBeamLensPropagate(x0, w0, f, Lens_z); colormap = parse(Int,cm))
+begin
+xlabel("z")
+ylabel("x")
+GR.heatmap(GaussianBeamLens.z,GaussianBeamLens.x,GaussianBeamLensPropagate(x0, w0, f, Lens_z)'; colormap = parse(Int,cm))
+end
 
 # ╔═╡ Cell order:
 # ╠═3497df90-ded9-11eb-05ca-ab10e373dfb4
