@@ -26,12 +26,12 @@ module GtkGUI
     GaussianBeamLensPropagateColored(args...; colormap = ColorSchemes.inferno.colors) =
         haskey(cache, args) ? 
             cache[args] :
-            cache[args] = color_me(imadjustintensity(GaussianBeamLens.GaussianBeamLensPropagateUncached(args...)), colormap)
+            cache[args] = color_me(imadjustintensity(GaussianBeamLens.GaussianBeamLensPropagateUncached(args...)'), colormap)
 
     function gui()
         win = Window("GaussianBeamLens.jl") |> (bx = Box(:v))
-        I = GaussianBeamLensPropagateColored(0, 25, 1000, 1000)
-        c = canvas(UserUnit, size(I,2), size(I, 1))
+        I = GaussianBeamLensPropagateColored(0, 25, 1000, 1000)'
+        c = canvas(UserUnit, size(I,2), size(I,1))
         imshow!(c,I)
         x0sl = slider(-240:10:240)
         w0sl = slider(2:50)

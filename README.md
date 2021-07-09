@@ -30,6 +30,7 @@ Exploration of Julia 1.6.1 for simple optical simulations
 
 ### Updated timings after some optimization by @mkitti
 
+#### Loading core functionality
 ```julia
 julia> @time using GaussianBeamLens
   0.376621 seconds (368.81 k allocations: 40.561 MiB, 0.93% compilation time)
@@ -39,7 +40,10 @@ julia> @time GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 100
 
 julia> @time GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000);
   0.063783 seconds (46.21 k allocations: 64.539 MiB, 13.68% gc time)
+```
 
+#### Displaying a static image using GR v0.57.3
+```julia
 julia> @time using GR
   0.106745 seconds (50.41 k allocations: 3.768 MiB)
 
@@ -54,6 +58,19 @@ julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens
 
 julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000)')
   0.397841 seconds (5.58 M allocations: 170.225 MiB, 27.35% gc time)
+```
+
+#### Interactive simulation using GtkReactive.jl
+```julia
+julia> @time include("src/GtkGUI.jl")
+  7.177190 seconds (17.21 M allocations: 1.096 GiB, 6.74% gc time, 0.04% compilation time)
+Main.GtkGUI
+
+julia> @time using .GtkGUI
+  0.000004 seconds (19 allocations: 1.203 KiB, 55445.45% compilation time)
+
+julia> @time gui()
+  1.769222 seconds (2.44 M allocations: 208.761 MiB, 2.90% gc time, 86.39% compilation time)
 ```
 
 PC: D13
