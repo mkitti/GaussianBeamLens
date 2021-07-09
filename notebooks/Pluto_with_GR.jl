@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.7
+# v0.15.1
 
 using Markdown
 using InteractiveUtils
@@ -16,9 +16,7 @@ end
 # ╔═╡ a7ef92d7-41c1-4f7d-a0f9-b8037237af4f
 begin
 	using Pkg
-	Pkg.activate(".")
-	#Pkg.develop(url="https://github.com/mkitti/GaussianBeamLens.git")
-	#Pkg.activate("GaussianBeamLens")
+	Pkg.add(url="https://github.com/mkitti/GaussianBeamLens.git")
 end
 
 # ╔═╡ bca271a4-ee26-48ab-bef8-e6c28ae76351
@@ -64,7 +62,7 @@ Lens\_z:
 $(@bind Lens_z Slider(0:10:2000; default=1000, show_value=true))
 """
 
-# ╔═╡ 0a5838ba-39e9-4a76-8bb2-b7914a219a9f
+# ╔═╡ 4b7b50c6-1304-4c81-b2ac-92ecf7a3d4d1
 begin
 xlabel("z")
 ylabel("x")
@@ -76,5 +74,5 @@ end
 # ╠═a7ef92d7-41c1-4f7d-a0f9-b8037237af4f
 # ╠═bca271a4-ee26-48ab-bef8-e6c28ae76351
 # ╠═10e09fe7-cc23-4487-b1dc-b0a545bf2489
-# ╠═0a5838ba-39e9-4a76-8bb2-b7914a219a9f
+# ╠═4b7b50c6-1304-4c81-b2ac-92ecf7a3d4d1
 # ╠═b1e13be1-d608-43a1-a7d5-29a6c3f98229
