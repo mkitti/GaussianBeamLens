@@ -1,4 +1,9 @@
 module GtkGUI
+
+    if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optlevel"))
+        @eval Base.Experimental.@optlevel 1
+    end
+
     using MappedArrays, IndirectArrays, ColorSchemes, Images, GaussianBeamLens, GtkReactive, Gtk, Gtk.ShortNames, ImageView
     
     export gui
@@ -6,14 +11,15 @@ module GtkGUI
     const cache = Dict{Tuple{Int64,Int64,Int64,Int64},IndirectArray{RGB{Float64}, 2}}()
 
     """
-        color_me(A, cmap)
+        color_me_scaleminmax(A, cmap)
 
     Apply colormap `cmap` to an array `A`.
     See https://discourse.julialang.org/t/how-to-convert-a-matrix-to-an-rgb-image-using-images-jl/7265/9 by Tim Holy
     """
-    function color_me(A, cmap)
+    function color_me_scaleminmax(A, cmap)
         n = length(cmap)
-        f = s->clamp(round(Int, (n-1)*s)+1, 1, n)  # safely convert 0-1 to 1:n
+        scale = takemap(scaleminmax, A)
+        f = s->clamp(round(Int, (n-1)*scale(s))+1, 1, n)  # safely convert 0-1 to 1:n
         Ai = mappedarray(f, A)       # like f.(A) but does not allocate significant memory
         IndirectArray(Ai, cmap)      # colormap array
     end
@@ -26,7 +32,7 @@ module GtkGUI
     GaussianBeamLensPropagateColored(args...; colormap = ColorSchemes.inferno.colors) =
         haskey(cache, args) ? 
             cache[args] :
-            cache[args] = color_me(imadjustintensity(GaussianBeamLens.GaussianBeamLensPropagateUncached(args...)'), colormap)
+            cache[args] = color_me_scaleminmax(GaussianBeamLens.GaussianBeamLensPropagateUncached(args...)', colormap)
 
     function gui()
         win = Window("GaussianBeamLens.jl") |> (bx = Box(:v))
@@ -56,7 +62,7 @@ module GtkGUI
         (win = win, c = c, x0sl = x0sl, w0sl = w0sl, fsl = fsl, Lens_zsl = Lens_zsl, redraw = redraw)
     end
 
-    precompile(color_me, (Matrix{Float64}, Vector{RGB{Float64}}))
+    precompile(color_me_scaleminmax, (Matrix{Float64}, Vector{RGB{Float64}}))
     precompile(GaussianBeamLensPropagateColored,(Int64,Int64,Int64,Int64))
     precompile(gui,())
 end
