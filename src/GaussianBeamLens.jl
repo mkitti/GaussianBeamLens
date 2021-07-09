@@ -7,6 +7,8 @@ end
 
 using FFTW: ifft, fft, ifftshift, fftshift
 
+using ColorSchemes, Images
+
 export GaussianBeamLensPropagate
 
 const L = 1                      # wavelength of light 
@@ -26,6 +28,10 @@ const dz = 10                    # steps in z
 const zmax = 6000                # end of grid in z
 const z = 0:dz:zmax              # z grid
 
+const FE = zeros(Complex{Float64}, length(z), length(x))
+
+const cache = Dict{Tuple{Int64,Int64,Int64,Int64},Matrix{Float64}}()
+
 
 
 """
@@ -37,23 +43,34 @@ const z = 0:dz:zmax              # z grid
 Computes the intensity of the optical field at every point in x (lateral) and z (axial)
 """
 function GaussianBeamLensPropagate(x0,w0,f,Lens_z)
+    if haskey(cache,(x0,w0,f,Lens_z))
+        return cache[(x0,w0,f,Lens_z)]
+    else
+        return GaussianBeamLensPropagateUncached(x0, w0, f, Lens_z)
+    end
+end
+
+function GaussianBeamLensPropagateUncached(x0, w0, f, Lens_z)
     E = exp.(-((x .- x0)./w0).^2)             # initial transverse electric field
     Tf = exp.(1im.*k.*(x.^2)/(2*f))           # transmission function for a thin lens
     
     # Propagate beam
-    FE = zeros(Complex{Float64},length(z),length(E))
+    #FE = zeros(Complex{Float64},length(z),length(E))
     FE[1,:] = E
 
     for d = 1:length(z)-1
+        # We could save some time if we saved the prior iteration in Fourier space
         FE[d+1,:] = ifft(ifftshift( fftshift(fft(FE[d,:])).*exp.(-1im.*kz.*dz) ))
         if abs(z[d]- Lens_z) < dz/2        
-            FE[d+1,:] = FE[d+1,:].*Tf
+            FE[d+1,:] .*= Tf
         end
     end
-    I = abs.(FE).^2                # intensity of the field at every point in x and z
+    I = abs2.(FE)                # intensity of the field at every point in x and z
+    cache[(x0,w0,f,Lens_z)] = I
     return I
 end
 
+precompile(GaussianBeamLensPropagateUncached, (Int64, Int64, Int64, Int64))
 precompile(GaussianBeamLensPropagate, (Int64, Int64, Int64, Int64))
 
 end
