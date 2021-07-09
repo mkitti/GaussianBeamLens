@@ -95,6 +95,8 @@ julia> include("GLMakie_GaussianBeamLens.jl")
 
 ### Pluto with GR
 
-See a [static HTML version](images/Pluto_with_GR.jl.html) of the [notebook](notebooks/Pluto_with_GR.jl).
+![Pluto Notebook using GR](images/pluto_gr.png)
+
+See a [static HTML version](https://mkitti.github.io/GaussianBeamLens/images/Pluto_with_GR.jl.html) of the [notebook](notebooks/Pluto_with_GR.jl).
 
 PC: D13
