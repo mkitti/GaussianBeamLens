@@ -28,4 +28,32 @@ Exploration of Julia 1.6.1 for simple optical simulations
   - Hopefully, <code>GLMakie</code> and the overall visualization landscape in Julia will improve in the future, thereby making a switch to Julia from MATLAB/Python/Mathematica for these types of tasks more compelling. 
 #### rc
 
+### Updated timings after some optimization by @mkitti
+
+```julia
+julia> @time using GaussianBeamLens
+  0.376621 seconds (368.81 k allocations: 40.561 MiB, 0.93% compilation time)
+
+julia> @time GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000);
+  0.283066 seconds (832.55 k allocations: 110.724 MiB, 6.95% gc time, 77.52% compilation time)
+
+julia> @time GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000);
+  0.063783 seconds (46.21 k allocations: 64.539 MiB, 13.68% gc time)
+
+julia> @time using GR
+  0.106745 seconds (50.41 k allocations: 3.768 MiB)
+
+julia> @time GR.heatmap(GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000))
+  3.199314 seconds (4.19 M allocations: 237.825 MiB, 1.40% gc time, 21.84% compilation time)
+
+julia> @time GR.heatmap(GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000))
+  0.160951 seconds (3.12 M allocations: 174.922 MiB, 13.37% gc time)
+
+julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000)')
+  2.803033 seconds (5.90 M allocations: 188.710 MiB, 0.96% gc time, 6.35% compilation time)
+
+julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000)')
+  0.397841 seconds (5.58 M allocations: 170.225 MiB, 27.35% gc time)
+```
+
 PC: D13

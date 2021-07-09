@@ -5,9 +5,9 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optle
     @eval Base.Experimental.@optlevel 1
 end
 
-using FFTW: ifft, fft, ifftshift, fftshift
+#include("GtkGUI.jl")
 
-using ColorSchemes, Images
+using FFTW: ifft, fft, ifftshift, fftshift
 
 export GaussianBeamLensPropagate
 
@@ -40,7 +40,10 @@ const cache = Dict{Tuple{Int64,Int64,Int64,Int64},Matrix{Float64}}()
         w0:     Width of the Gaussian beam in object space
         f:      Focal length of the lens
         Lens_z: Axial Position of the lens
-Computes the intensity of the optical field at every point in x (lateral) and z (axial)
+
+Computes the intensity of the optical field at every point in x (lateral) and z (axial).
+This method caches previously generated images in a dictionary at `GaussianBeamLens.cache`.
+See GaussianBeamLensPropagate.GaussianBeamLensPropagateUncached for the actual implementation.
 """
 function GaussianBeamLensPropagate(x0,w0,f,Lens_z)
     if haskey(cache,(x0,w0,f,Lens_z))
@@ -50,6 +53,14 @@ function GaussianBeamLensPropagate(x0,w0,f,Lens_z)
     end
 end
 
+"""
+    GaussianBeamLensPropagateUncached(x0,w0,f,Lens_z)
+        x0:     Lateral offset of the input beam
+        w0:     Width of the Gaussian beam in object space
+        f:      Focal length of the lens
+        Lens_z: Axial Position of the lens
+Computes the intensity of the optical field at every point in x (lateral) and z (axial)
+"""
 function GaussianBeamLensPropagateUncached(x0, w0, f, Lens_z)
     E = exp.(-((x .- x0)./w0).^2)             # initial transverse electric field
     Tf = exp.(1im.*k.*(x.^2)/(2*f))           # transmission function for a thin lens
