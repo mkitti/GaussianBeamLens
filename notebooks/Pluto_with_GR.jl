@@ -16,20 +16,18 @@ end
 # ╔═╡ a7ef92d7-41c1-4f7d-a0f9-b8037237af4f
 begin
 	using Pkg
+	Pkg.activate(mktempdir())
 	Pkg.add(url="https://github.com/mkitti/GaussianBeamLens.git")
+	Pkg.add("GR")
+	Pkg.add("PlutoUI")
 end
+
 
 # ╔═╡ bca271a4-ee26-48ab-bef8-e6c28ae76351
 begin
 	using GaussianBeamLens
 	using GR
 	using PlutoUI
-end
-
-# ╔═╡ 3497df90-ded9-11eb-05ca-ab10e373dfb4
-begin
-	cd(raw"C:\Users\kittisopikulm\Documents\Julia\GaussianBeamLens")
-	pwd()
 end
 
 # ╔═╡ 10e09fe7-cc23-4487-b1dc-b0a545bf2489
@@ -70,7 +68,6 @@ GR.heatmap(GaussianBeamLens.z,GaussianBeamLens.x,GaussianBeamLensPropagate(x0, w
 end
 
 # ╔═╡ Cell order:
-# ╠═3497df90-ded9-11eb-05ca-ab10e373dfb4
 # ╠═a7ef92d7-41c1-4f7d-a0f9-b8037237af4f
 # ╠═bca271a4-ee26-48ab-bef8-e6c28ae76351
 # ╠═10e09fe7-cc23-4487-b1dc-b0a545bf2489
