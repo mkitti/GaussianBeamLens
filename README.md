@@ -59,8 +59,13 @@ julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens
   2.803033 seconds (5.90 M allocations: 188.710 MiB, 0.96% gc time, 6.35% compilation time)
 
 julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000)')
-  0.397841 seconds (5.58 M allocations: 170.225 MiB, 27.35% gc time)
+  3.518419 seconds (7.33 M allocations: 273.173 MiB, 1.21% gc time, 25.10% compilation time)
+
+julia> @time GR.heatmap(GaussianBeamLens.z, GaussianBeamLens.x, GaussianBeamLens.GaussianBeamLensPropagateUncached(0, 25, 1000, 1000)')
+  0.302649 seconds (5.58 M allocations: 170.225 MiB, 6.66% gc time)
 ```
+
+![Screenshot of GR using QtTerm](images/gr_qt.png)
 
 #### Interactive simulation using GtkReactive.jl
 ```julia
@@ -87,5 +92,9 @@ julia> include("GLMakie_GaussianBeamLens.jl")
 ```
 
 ![Screenshot of GLMakie GUI](images/glmakie.png)
+
+### Pluto with GR
+
+See a [static HTML version](images/Pluto_with_GR.jl.html) of the [notebook](notebooks/Pluto_with_GR.jl).
 
 PC: D13
