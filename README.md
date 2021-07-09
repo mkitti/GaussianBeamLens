@@ -75,4 +75,17 @@ julia> @time gui()
   1.769222 seconds (2.44 M allocations: 208.761 MiB, 2.90% gc time, 86.39% compilation time)
 ```
 
+![Screenshot of GTK GUI](images/gtkgui.png)
+
+### Interactive simulation using GLMakie.jl
+
+```julia
+julia> include("GLMakie_GaussianBeamLens.jl")
+  1.519261 seconds (6.40 M allocations: 433.387 MiB, 6.65% gc time, 4.79% compilation time) # @lift
+ 34.037748 seconds (94.64 M allocations: 5.542 GiB, 4.08% gc time, 64.77% compilation time) # heatmap
+  5.783349 seconds (17.83 M allocations: 1.035 GiB, 4.66% gc time, 99.59% compilation time) # labelslidergrid!
+```
+
+![Screenshot of GLMakie GUI](images/glmakie.png)
+
 PC: D13
