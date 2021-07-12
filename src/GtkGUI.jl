@@ -62,6 +62,11 @@ module GtkGUI
         (win = win, c = c, x0sl = x0sl, w0sl = w0sl, fsl = fsl, Lens_zsl = Lens_zsl, redraw = redraw)
     end
 
+    function __init__()
+        @time gui()
+        readline()
+    end
+
     precompile(color_me_scaleminmax, (Matrix{Float64}, Vector{RGB{Float64}}))
     precompile(GaussianBeamLensPropagateColored,(Int64,Int64,Int64,Int64))
     precompile(gui,())
