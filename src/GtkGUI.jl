@@ -63,8 +63,17 @@ module GtkGUI
     end
 
     function __init__()
+        show()
+    end
+
+    function show()
         @time gui()
+        println("Press any key")
         readline()
+    end
+
+    function precompile_execute()
+        GaussianBeamLensPropagateColored(0, 25, 1000, 1000)
     end
 
     precompile(color_me_scaleminmax, (Matrix{Float64}, Vector{RGB{Float64}}))
