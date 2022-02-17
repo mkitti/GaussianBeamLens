@@ -69,6 +69,31 @@ function GaussianBeamLensPropagateUncached(x0, w0, f, Lens_z)
     #FE = zeros(Complex{Float64},length(z),length(E))
     FE[1,:] = E
 
+    # Divide problem into 1) before lens, 2) lens, 3) after lens regimes
+    z_rel_lens = z .- Lens_z
+    lens_start = findfirst(>(-dz/2), z_rel_lens)
+    lens_stop = findlast(<(dz/2), z_rel_lens)
+
+    # Before the lens
+    E_hat = fftshift(fft(FE[1,:]))
+    Threads.@threads for d = 1:lens_start-1
+        FE[d+1,:] = ifft(ifftshift( E_hat.*exp.(-1im.*kz.*dz.*d) ))
+    end
+
+    # Lens
+    for d = lens_start : lens_stop
+        FE[d+1,:] = ifft(ifftshift( fftshift(fft(FE[d,:])).*exp.(-1im.*kz.*dz) )) .* Tf
+    end
+
+    # After the lens
+    E_hat = fftshift(fft(FE[lens_stop + 1,:]))
+    Threads.@threads for d = lens_stop + 1 : length(z) - 1
+        FE[d+1,:] = ifft(ifftshift( E_hat.*exp.(-1im.*kz.*dz.*(d-lens_stop)) ))
+    end
+
+
+    # Single threaded version
+    #=
     for d = 1:length(z)-1
         # We could save some time if we saved the prior iteration in Fourier space
         FE[d+1,:] = ifft(ifftshift( fftshift(fft(FE[d,:])).*exp.(-1im.*kz.*dz) ))
@@ -76,6 +101,8 @@ function GaussianBeamLensPropagateUncached(x0, w0, f, Lens_z)
             FE[d+1,:] .*= Tf
         end
     end
+    =#
+    
     I = abs2.(FE)                # intensity of the field at every point in x and z
     cache[(x0,w0,f,Lens_z)] = I
     return I
